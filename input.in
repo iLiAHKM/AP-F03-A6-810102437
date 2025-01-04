@@ -1,0 +1,18 @@
+POST login ? username "low_mist" password "meoow"
+POST signup ? username "low_mist" password "meow"
+POST signup ? username "amir_akbar" password "1382"
+POST logout ?
+POST login ? username "low_mist" password "meoow"
+POST login ? username "low_mist" password "meow"
+POST logout ?
+POST login ? username "low_mist" password "meow"
+POST reserve ? restaurant_name "sib" table_id "3" start_time "9" end_time "23" foods "berger,pitza,pitza,pitza,pitza,pitza,pitza,pitza"
+POST reserve ? restaurant_name "sibkl;" table_id "3" start_time "14" end_time "20" foods "berger,pitza,pitza,pitza,pitza,pitza,pitza,pitza"
+POST reserve ? restaurant_name "sib" table_id "11000" start_time "14" end_time "20" foods "berger,pitza"
+POST reserve ? restaurant_name "sib" table_id "11000" start_time "9" end_time "23" foods "berger,pitzas"
+POST reserve ? restaurant_name "sib" table_id "5" start_time "14" end_time "20" foods "berger,pitza"
+POST reserve ? restaurant_name "sib" table_id "3" start_time "10" end_time "13" foods "berger,pitza"
+POST reserve ? restaurant_name "maman joon" table_id "3" start_time "12" end_time "13"
+maman joon
+GET reserve ?
+

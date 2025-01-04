@@ -1,0 +1,7 @@
+POST signup ? username a password a
+PUT my_district ? district "Azadi"
+
+GET restaurants ? food_name "pitza"
+GET restaurant_detail ? restaurant_name "sis"
+
+POST reserve ? restaurant_name "maman joon" table_id "1" start_time "15" end_time "17" foods "Sib Zamini,Sokhari"

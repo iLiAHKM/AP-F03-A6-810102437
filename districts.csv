@@ -1,0 +1,6 @@
+district,neighbors
+Azadi,Enghelab
+Enghelab,Azadi;ss
+ss,Enghelab;vf
+vf,ku
+ku,vf
