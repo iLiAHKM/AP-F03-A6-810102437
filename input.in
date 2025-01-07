@@ -6,6 +6,7 @@ POST login ? username "low_mist" password "meoow"
 POST login ? username "low_mist" password "meow"
 POST logout ?
 POST login ? username "low_mist" password "meow"
+GET reserve ?
 POST reserve ? restaurant_name "sib" table_id "3" start_time "9" end_time "23" foods "berger,pitza,pitza,pitza,pitza,pitza,pitza,pitza"
 POST reserve ? restaurant_name "sibkl;" table_id "3" start_time "14" end_time "20" foods "berger,pitza,pitza,pitza,pitza,pitza,pitza,pitza"
 POST reserve ? restaurant_name "sib" table_id "11000" start_time "14" end_time "20" foods "berger,pitza"

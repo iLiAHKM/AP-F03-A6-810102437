@@ -63,24 +63,53 @@ class User {
     string get_password();
     string get_district();
     shared_ptr<map<string,string>> get_reservation();
-
-    map<int, shared_ptr<RservInterval>> get_reservation2() { return reservation2; }
+    bool has_reservation(const string restaurant_name){
+        if(restaurant_name != ""){
+            cout<<1<<endl;
+            auto it_rest = reservation2.find(restaurant_name);
+            auto reservation_info = it_rest->second;
+            for(auto it:reservation_info){
+                if(!(it.second)->empty()) return true;
+            }
+            return false;
+        }else{
+            cout<<2<<endl;
+            for(auto it_rest: reservation2){
+                auto reservation_info = it_rest.second;
+                for(auto it:reservation_info){
+                    if(!(it.second)->empty()) return true;
+                }
+            }
+            return false;
+        }
+    }
+    Reservation get_reservation2() { return reservation2; }
     void set_username(string usrname);
     void set_password(string password);
     void set_district(string district);
     void set_reservation(string x,string y);
-    void set_reservation2(int id, pair<int, int> interval) {
-        cout<<2323<<endl;
-        auto it = reservation2.find(id);
-        if(it == reservation2.end()) {
-            RservInterval vec = {interval};
-        reservation2[id] = make_shared<RservInterval>(vec);
-        return;
+    void set_reservation2(int id, pair<int, int> interval, const string& restaurant_name) {
+        auto it_rest = reservation2.find(restaurant_name);
+        if (it_rest == reservation2.end()) {
+            cout << restaurant_name << endl;
+            cout << "OPOPO" << endl;            
+            reservation2[restaurant_name] = map<int, shared_ptr<RservInterval>>();
         }
-        cout<<24124<<endl;
+        
+        auto& reservation_info = reservation2[restaurant_name];
+
+        auto it = reservation_info.find(id);
+        if (it == reservation_info.end()) {
+            cout << "2e2e2" << endl;            
+            RservInterval vec = {interval};
+            reservation_info[id] = make_shared<RservInterval>(vec);
+            return;
+        }
+        
         (it->second)->push_back(interval);
-        cout<<6578<<endl;
-    };
+}
+
+
     bool is_logged_in();
     private:
         string district = "";
@@ -89,7 +118,7 @@ class User {
         bool login_status = 0;
         bool is_auser = 0;
         shared_ptr<map<string,string>> reservation= make_shared<map<string,string>>();
-        map<int, shared_ptr<RservInterval>> reservation2;
+        Reservation reservation2;
 };
 
 class System{
