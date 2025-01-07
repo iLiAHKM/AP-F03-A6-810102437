@@ -332,15 +332,10 @@ void GET(vector<string> &commands,System &ss,User * user){
         if(commands[2] == "?")
         {
             map<string,string> input_informations2 = make_command_readble2(commands);
-        if (input_informations2["valid"] == "1")
-        {
-            reservation_report(ss, user, input_informations2);
-        }else{
-
-        }
-        
-            
-
+            if (input_informations2["valid"] == "1")
+            {
+                reservation_report(ss, user, input_informations2);
+            }
         }else{
             cout << "Bad Request";
             return;

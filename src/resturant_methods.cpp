@@ -10,13 +10,22 @@ Resturant::Resturant(string _name,string _district,string _foods_str, shared_ptr
     oppening = _oppening;
     closing = _closing;
     foods_str = _foods_str;
-    cout<<"JJJJJ"<<foods_str<<endl;
+    
     number_of_tables = _number_of_tables;
+    tables = make_shared<vector<Table>>();
     for (int i = 1; i <= stoi(number_of_tables); i++)
     {
         reserved_chair[i] = "";
+        tables->emplace_back(i);
     }
     
+}
+
+Table Resturant::get_table_by_id(int id){
+    auto it = find_if(tables->begin(), tables->end(), [id] (Table& table){
+        return table.get_id() == id;
+    });
+    return *it;
 }
 
 // map<string, string> Resturant::prepare_food(string food_str){
@@ -33,7 +42,18 @@ Resturant::Resturant(string _name,string _district,string _foods_str, shared_ptr
 void Resturant::set_chair_reserve(int chair,string time){
     reserved_chair[chair] = time;
 }
-
+void Resturant::set_table_as_reserved(int id, pair<int, int> interval){
+    auto it = find_if(tables->begin(), tables->end(), [id] (Table& table){
+        return table.get_id() == id;
+    });
+    if(it != tables->end()){
+        it->set_new_reservtion(interval);
+    }
+    else{
+        cout<<"Not Found"<<endl;
+        return;
+    }
+}
 map<int, string> Resturant::get_resrved_chair(){ return reserved_chair; }
 
 string Resturant::get_oppening(){
