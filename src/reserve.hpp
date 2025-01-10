@@ -86,19 +86,30 @@ bool has_user_this_reservation_id(User& user, const string id, const string rest
     if(it == resrvation_info.end()) return false;
     return true;
 }
+///usr/include/c++/14/bits/predefined_ops.h: In instantiation of ‘constexpr bool __gnu_cxx::__ops::_Iter_pred<_Predicate>::operator()(_Iterator) [with _Iterator = __gnu_cxx::__normal_iterator<std::shared_ptr<Resturant>*, std::vector<std::shared_ptr<Resturant> > >; _Predicate = collect_reserved_ids(std::vector<std::shared_ptr<Resturant> >&, const std::string&)::<lambda(Resturant&)>]’
+vector<int> collect_reserved_ids(vector<shared_ptr<Resturant>>& restaurants, const string& target_name) { 
+    vector<int> reserved_ids; 
+    auto it = find_if(restaurants.begin(), restaurants.end(), [&target_name](shared_ptr<Resturant>& rest) { 
+        string name = rest->get_name();
+        return name == target_name; 
+        }); 
+    if (it != restaurants.end()) {  
+        const map<int, string>& reserved_chairs = (*it)->get_resrved_chair(); 
+        for (const auto& pair : reserved_chairs) { 
+            reserved_ids.push_back(pair.first); 
+        } 
+    } 
+    return reserved_ids; 
+} 
 
-void stream_reservations(User user, const shared_ptr<map<string, string>> &user_reservations, const string inputed_restaurant_name, const string inputed_reserve_id) {
-    if(!user.has_reservation(inputed_restaurant_name)){
-        cout<<"Empty"<<endl;
-        return;
-    }
+
+void stream_reservations(Resturant* restaurant, User user, const shared_ptr<map<string, string>> &user_reservations, const string inputed_restaurant_name, const string inputed_reserve_id) {
+    
     if(inputed_restaurant_name == "" && inputed_reserve_id == "")
     {
         for (const auto &entry : *user_reservations) {
             string restaurant_name = entry.first;
             string value = entry.second;
-
-            
             istringstream stream(value);
             vector<TableInfo> table_infos;
             string token;
@@ -131,10 +142,12 @@ void stream_reservations(User user, const shared_ptr<map<string, string>> &user_
             }
         }
     }
-    else{
-        
+    else if(inputed_restaurant_name != "" && inputed_reserve_id == ""){
+        if(!user.has_reservation(inputed_restaurant_name)){
+            cout<<"Empty"<<endl;
+            return;
+        }
         string restaurant_name = inputed_restaurant_name;
-        
         string value = find_value_by_key(*user_reservations, inputed_restaurant_name);
         istringstream stream(value);
         vector<TableInfo> table_infos;
@@ -146,7 +159,7 @@ void stream_reservations(User user, const shared_ptr<map<string, string>> &user_
             getline(record_stream, table_id, '-');
             getline(record_stream, start_time, '-');
             getline(record_stream, end_time, '-');
-
+ 
             map<string, int> food_counts;
             string food_item;
             while (getline(record_stream, food_item, '-')) {
@@ -167,14 +180,88 @@ void stream_reservations(User user, const shared_ptr<map<string, string>> &user_
             cout<<endl;
         }
     }
+    else{
+        if(!restaurant->has_reservation(stoi(inputed_reserve_id))){
+        cout<<"Not Found"<<endl;
+        return;
+        }
+        if(!user.has_reservation(inputed_restaurant_name)){
+            cout<<"Empty"<<endl;
+            return;
+        }
+        if(user.has_this_reservation(inputed_restaurant_name, stoi(inputed_reserve_id))){
+            cout<<"Permission Denied"<<endl;
+            return;
+        }
+
+        string restaurant_name = inputed_restaurant_name;
+        string value = find_value_by_key(*user_reservations, inputed_restaurant_name);
+        istringstream stream(value);
+        vector<TableInfo> table_infos;
+        string token;
+        while (stream >> token) {
+            istringstream record_stream(token);
+            string reservation_id, table_id, start_time, end_time;
+            getline(record_stream, reservation_id, '-');
+            getline(record_stream, table_id, '-');
+            getline(record_stream, start_time, '-');
+            getline(record_stream, end_time, '-');
+ 
+            map<string, int> food_counts;
+            string food_item;
+            while (getline(record_stream, food_item, '-')) {
+                cout<<"ooo_item "<<food_item<<endl;
+                food_counts[food_item]++;
+            }
+
+            table_infos.push_back({reservation_id, table_id, start_time, end_time, food_counts});
+        }
+
+        for (const auto &info : table_infos) {
+            if(info.table_id != inputed_reserve_id) continue;
+            if(restaurant_name == "" || info.table_id =="0") break;
+            cout<<info.reservation_id<< ": "<<restaurant_name<<" "<<info.table_id
+                <<" "<<info.start_time<<"-"<<info.end_time;
+            for(auto& food_pair: info.food_counts){
+                cout<<" "<<food_pair.first<<"("<<food_pair.second<<") ";
+            }
+            cout<<endl;
+        }
+    }
 }
 
 void reservation_report(System& system, User *user, map<string,string> inputed_information)
 {
+    cout<<"XXXX"<<endl;
+    auto restaurants = system.get_resturants();
     string inputed_restauarnt_name = inputed_information["restaurant_name"];
     string inputed_reserve_id = inputed_information["reserve_id"];
+    if(inputed_restauarnt_name != ""){
+        vector<int>  corresponded_ids_to_this_restaurant = collect_reserved_ids(restaurants, inputed_restauarnt_name);
+        auto it = find(corresponded_ids_to_this_restaurant.begin(), corresponded_ids_to_this_restaurant.end(), stoi(inputed_reserve_id));
+        if(corresponded_ids_to_this_restaurant.empty()) cout<<"ZXCVBNM<"<<endl;
+        for(auto i:corresponded_ids_to_this_restaurant){
+            cout<<i<<". ";;
+        }
+        cout<<endl;
+        auto it_end = corresponded_ids_to_this_restaurant.end();
+        if(it == it_end){
+            cout<<inputed_reserve_id<<'.'<<endl;
+            cout<<"Permission Denied"<<endl;
+            return;
+        }
+    }
+    cout<<"YYYY"<<endl;
+    // shared_ptr<Resturant> resturant;
+    auto it = find_if(restaurants.begin(), restaurants.end(), [&inputed_restauarnt_name](shared_ptr<Resturant>& rest) { 
+        string name = rest->get_name();
+        return name == inputed_restauarnt_name; 
+        });
+    cout<<"::::::"<<endl;
+    auto resturant = (*it).get();
+    cout<<"ZZZZZZ"<<endl;
     shared_ptr<map<string, string>> user_reservations = user->get_reservation();
-    stream_reservations(*user, user_reservations, inputed_restauarnt_name, inputed_reserve_id);
+    stream_reservations(resturant, *user, user_reservations, inputed_restauarnt_name, inputed_reserve_id);
 }
 
 void printMap(const map<string, string>& myMap) 
