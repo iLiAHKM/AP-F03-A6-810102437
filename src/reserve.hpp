@@ -15,7 +15,6 @@ bool has_foods(const vector<string>& foods_to_reserve,shared_ptr<map<string, str
 
 bool has_restaurant(System &system, const string& restaurant_name);
 
-
 shared_ptr<Resturant> get_restuarant_filter_name(System system,string name);
 
 map<string,string> make_command_readble(vector<string> commands);
@@ -98,7 +97,7 @@ vector<int> collect_reserved_ids(vector<shared_ptr<Resturant>>& restaurants, con
         for (const auto& pair : reserved_chairs) { 
             reserved_ids.push_back(pair.first); 
         } 
-    } 
+    }
     return reserved_ids; 
 } 
 
@@ -181,6 +180,7 @@ void stream_reservations(Resturant* restaurant, User user, const shared_ptr<map<
         }
     }
     else{
+        cout<<inputed_restaurant_name<<'.'<<inputed_reserve_id<<endl;
         if(!restaurant->has_reservation(stoi(inputed_reserve_id))){
         cout<<"Not Found"<<endl;
         return;
@@ -193,13 +193,12 @@ void stream_reservations(Resturant* restaurant, User user, const shared_ptr<map<
             cout<<"Permission Denied"<<endl;
             return;
         }
-
         string restaurant_name = inputed_restaurant_name;
         string value = find_value_by_key(*user_reservations, inputed_restaurant_name);
         istringstream stream(value);
         vector<TableInfo> table_infos;
         string token;
-        while (stream >> token) {
+        while (stream >> token) {   
             istringstream record_stream(token);
             string reservation_id, table_id, start_time, end_time;
             getline(record_stream, reservation_id, '-');
@@ -210,16 +209,18 @@ void stream_reservations(Resturant* restaurant, User user, const shared_ptr<map<
             map<string, int> food_counts;
             string food_item;
             while (getline(record_stream, food_item, '-')) {
-                cout<<"ooo_item "<<food_item<<endl;
                 food_counts[food_item]++;
             }
 
+        
             table_infos.push_back({reservation_id, table_id, start_time, end_time, food_counts});
         }
-
+        cout<<table_infos.empty()<<endl;
+        int t=0;
         for (const auto &info : table_infos) {
-            if(info.table_id != inputed_reserve_id) continue;
+            if(info.reservation_id != inputed_reserve_id) continue;
             if(restaurant_name == "" || info.table_id =="0") break;
+            cout<<++t<<'.'<<'t'<<endl;
             cout<<info.reservation_id<< ": "<<restaurant_name<<" "<<info.table_id
                 <<" "<<info.start_time<<"-"<<info.end_time;
             for(auto& food_pair: info.food_counts){
@@ -232,18 +233,12 @@ void stream_reservations(Resturant* restaurant, User user, const shared_ptr<map<
 
 void reservation_report(System& system, User *user, map<string,string> inputed_information)
 {
-    cout<<"XXXX"<<endl;
     auto restaurants = system.get_resturants();
     string inputed_restauarnt_name = inputed_information["restaurant_name"];
     string inputed_reserve_id = inputed_information["reserve_id"];
     if(inputed_restauarnt_name != ""){
         vector<int>  corresponded_ids_to_this_restaurant = collect_reserved_ids(restaurants, inputed_restauarnt_name);
         auto it = find(corresponded_ids_to_this_restaurant.begin(), corresponded_ids_to_this_restaurant.end(), stoi(inputed_reserve_id));
-        if(corresponded_ids_to_this_restaurant.empty()) cout<<"ZXCVBNM<"<<endl;
-        for(auto i:corresponded_ids_to_this_restaurant){
-            cout<<i<<". ";;
-        }
-        cout<<endl;
         auto it_end = corresponded_ids_to_this_restaurant.end();
         if(it == it_end){
             cout<<inputed_reserve_id<<'.'<<endl;
@@ -251,15 +246,12 @@ void reservation_report(System& system, User *user, map<string,string> inputed_i
             return;
         }
     }
-    cout<<"YYYY"<<endl;
     // shared_ptr<Resturant> resturant;
     auto it = find_if(restaurants.begin(), restaurants.end(), [&inputed_restauarnt_name](shared_ptr<Resturant>& rest) { 
         string name = rest->get_name();
         return name == inputed_restauarnt_name; 
         });
-    cout<<"::::::"<<endl;
     auto resturant = (*it).get();
-    cout<<"ZZZZZZ"<<endl;
     shared_ptr<map<string, string>> user_reservations = user->get_reservation();
     stream_reservations(resturant, *user, user_reservations, inputed_restauarnt_name, inputed_reserve_id);
 }
@@ -383,11 +375,9 @@ bool check_interfrence_of_user_reservaations(System system, const Reservation& u
     for(auto it_rest:user_reservations2){
         for (auto pair : it_rest.second){
             for(auto interval : *pair.second){
-                cout<<"inter"<<interval.first<<'.'<<interval.second<<'.'<<endl;
                 if(!(begin >= interval.second || end <= interval.first))
                 {
                     return true;
-                    cout<<"ASASAS"<<endl;
                 }
             }
         }
@@ -606,10 +596,9 @@ map<string,string> make_command_readble2(vector<string> commands){
         {
             chair_num = 1;
         }
-       
     }
     
-    if(!(name && chair_num) || (name && chair_num))
+    if(!(name && chair_num) || (name && chair_num) || (name && !chair_num))
     {
         z["valid"] = "1";
     }else{
@@ -618,20 +607,20 @@ map<string,string> make_command_readble2(vector<string> commands){
     }
    
 
-    string d =  "";
+    string tempt_str =  "";
     size_t pos1 = 0;
     size_t pos2 = 0;
     if(name == 1 & chair_num == 1){
         pos1 = c.find("restaurant_name");
         pos1 = c.find('"',pos1);
         pos2 = c.find('"',pos1+1);
-        d = c.substr(pos1+1,pos2-pos1-1);
-        z["restaurant_name"] = d;
+        tempt_str = c.substr(pos1+1,pos2-pos1-1);
+        z["restaurant_name"] = tempt_str;
         pos1 = c.find("reserve_id");
         pos1 = c.find('"',pos1);
         pos2 = c.find('"',pos1+1);
-        d = c.substr(pos1+1,pos2-pos1-1);    
-        z["reserve_id"] = d;
+        tempt_str = c.substr(pos1+1,pos2-pos1-1);    
+        z["reserve_id"] = tempt_str;
     }
     return z;
 }

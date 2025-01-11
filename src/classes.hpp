@@ -115,8 +115,6 @@ class User {
     void set_reservation2(int id, pair<int, int> interval, const string& restaurant_name) {
         auto it_rest = reservation2.find(restaurant_name);
         if (it_rest == reservation2.end()) {
-            cout << restaurant_name << endl;
-            cout << "OPOPO" << endl;            
             reservation2[restaurant_name] = map<int, shared_ptr<RservInterval>>();
         }
         
@@ -124,7 +122,6 @@ class User {
 
         auto it = reservation_info.find(id);
         if (it == reservation_info.end()) {
-            cout << "2e2e2" << endl;            
             RservInterval vec = {interval};
             reservation_info[id] = make_shared<RservInterval>(vec);
             return;

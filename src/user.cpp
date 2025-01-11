@@ -31,10 +31,8 @@ string User::get_district(){
 }
 
 void User::set_reservation(string x, string y){
-    cout<<454545<<endl;
     try//farz mikonam x name of resturan va yid reserv haye motenazer ba oon resturan basheh
     {
-        cout<<787878<<endl;
         (*reservation)[x] =(*reservation)[x] + " " + y;
     }
     catch(const std::exception& e)
