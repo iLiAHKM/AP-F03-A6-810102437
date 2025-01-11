@@ -1,6 +1,6 @@
 CXX = g++ -g -std=c++20
 FILES = build/commands.o  build/user.o build/resturant_methods.o build/system.o build/main.o
-EXE = a
+EXE = UTast
 
 all: $(EXE)
 
