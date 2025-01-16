@@ -8,7 +8,7 @@
 #include <map>
 #include <memory>
 #include <algorithm>
-
+#include <cstdlib>
 using namespace std;
 
 typedef vector<pair<int, int>> RservInterval;

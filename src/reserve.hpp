@@ -1,8 +1,8 @@
 #ifndef RESERVE_HPP
 #define RESERVE_HPP
 #include <algorithm>
-
-
+#include "header.hpp"
+#include "classes.hpp"
 void set_reservation(System &system, map<string,string> inputedinformation, User *user);
 
 shared_ptr<Resturant> * get_resturant_ptr_filter_name(System &system,string name);

@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 #include "command_defenition.hpp"
-
+#include "../APHTTP-main/server/server.hpp"
 using namespace std;
 
 int detect_main_command(string command, vector<string> defined_commands) {
@@ -50,13 +50,17 @@ shared_ptr<map<string, string>> prepare_food(string food_str){
     return food_map;
 }
 
+void map_server_paths(Server& server){
+    server.setNotFoundErrPage("../html/404.html");
+}
+
 int main(int argc, char* argv[]) {
 
     User *first_user = 0;
     string command;
     vector<string> commands;
     System system;
-    string resturant_file_name = argv[1];
+    string resturant_file_name = argv[2];
     ifstream file(resturant_file_name);
     string line;
     getline(file, line);
@@ -72,14 +76,13 @@ int main(int argc, char* argv[]) {
         shared_ptr<Resturant> x = make_shared<Resturant>(row[0], row[1],row[2], prepare_food(row[2]), row[3], row[4], row[5]);
         system.add_resturant(x);
     }
-
     file.close();
 
     string district_file_name = argv[2];
     ifstream file2(district_file_name);
     getline(file2, line);
 
-        while (getline(file2, line)) {
+    while (getline(file2, line)) {
         stringstream lineStream(line);
         string cell;
         vector<string> row;
@@ -89,7 +92,6 @@ int main(int argc, char* argv[]) {
         }
         system.add_district(row[0],row[1]);
     }
-
     file2.close();
 
     vector<string> defined_commands = {"POST","GET","PUT", "DELETE"};

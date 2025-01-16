@@ -1,5 +1,5 @@
-// #ifndef RESTAURANT
-// #define RESTAURANT
+#ifndef RESTAURANT_METHODS
+#define RESTAURANT_METHODS
 #include "classes.hpp"
 
 Resturant::Resturant(string _name,string _district,string _foods_str, shared_ptr<map<string, string>> _foods,string _oppening,string _closing,string _number_of_tables){
@@ -89,4 +89,4 @@ vector<string> splitStringByDelimiter4(const string input, char delimiter) {
     return result;
 }
 
-// #endif
+#endif
