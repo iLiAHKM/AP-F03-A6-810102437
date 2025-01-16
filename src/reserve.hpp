@@ -1,3 +1,5 @@
+#ifndef RESERVE_HPP
+#define RESERVE_HPP
 #include <algorithm>
 
 
@@ -85,7 +87,7 @@ bool has_user_this_reservation_id(User& user, const string id, const string rest
     if(it == resrvation_info.end()) return false;
     return true;
 }
-///usr/include/c++/14/bits/predefined_ops.h: In instantiation of ‘constexpr bool __gnu_cxx::__ops::_Iter_pred<_Predicate>::operator()(_Iterator) [with _Iterator = __gnu_cxx::__normal_iterator<std::shared_ptr<Resturant>*, std::vector<std::shared_ptr<Resturant> > >; _Predicate = collect_reserved_ids(std::vector<std::shared_ptr<Resturant> >&, const std::string&)::<lambda(Resturant&)>]’
+ 
 vector<int> collect_reserved_ids(vector<shared_ptr<Resturant>>& restaurants, const string& target_name) { 
     vector<int> reserved_ids; 
     auto it = find_if(restaurants.begin(), restaurants.end(), [&target_name](shared_ptr<Resturant>& rest) { 
@@ -100,7 +102,6 @@ vector<int> collect_reserved_ids(vector<shared_ptr<Resturant>>& restaurants, con
     }
     return reserved_ids; 
 } 
-
 
 void stream_reservations(Resturant* restaurant, User user, const shared_ptr<map<string, string>> &user_reservations, const string inputed_restaurant_name, const string inputed_reserve_id) {
     
@@ -383,24 +384,6 @@ bool check_interfrence_of_user_reservaations(System system, const Reservation& u
         }
     }
     return false;
-    // for(const auto& pair : *user_reservations){
-    //     // if (pair.first == restaurant_name)
-    //     //     continue;
-    //     user_reservation_ids_in_this_restaurant = splitStringByDelimiter2(pair.second, ',');
-    //     for (auto id : user_reservation_ids_in_this_restaurant){
-    //         the_chair_reservation = find_value_by_key2((*(get_resturant_ptr_filter_name(system, restaurant_name)))->get_reserve_chairs(), stoi(id));
-    //         cout<<"EEEEEE "<<the_chair_reservation<<endl;
-    //         the_chair_reservation_intervals = splitStringByDelimiter2(the_chair_reservation, ',');
-    //         for(auto interval : the_chair_reservation_intervals){
-    //             start_and_end = splitStringByDelimiter2(interval, '-');
-    //             if((stoi(inputed_start_time) >= stoi(start_and_end[1]) || stoi(inputed_end_time) <= stoi(start_and_end[0])))
-    //             {
-    //                 return true;
-    //             }
-    //         }
-    //     }
-    // }
-    return false;
 }
 
 string find_value_by_key(const map<string, string> map, const string& x) { 
@@ -422,7 +405,6 @@ string find_value_by_key2(const map<int, string>& map, const int& x) {
         return ""; 
     }
 }
-
 
 double calc_price(shared_ptr<map<string, string>>  foods_in_restaurant, const string& food)
 {
@@ -464,7 +446,6 @@ bool has_restaurant(System &system, const string& restaurant_name){
     return false;
 }
 
-
 shared_ptr<Resturant> * get_resturant_ptr_filter_name(System &system,string name){
     int aa = 0;
     for (int i = 0 ; i < system.get_resturants().size();i++)
@@ -493,9 +474,7 @@ map<string,string> make_command_readble(vector<string> commands){
     bool go = 0;
     bool food = 0;
     for (auto i : commands)
-    {
-        
-      
+    {  
         if (i == "restaurant_name")
         {
             name = 1;
@@ -573,8 +552,6 @@ map<string,string> make_command_readble(vector<string> commands){
     return z;
 }
 
-
-
 map<string,string> make_command_readble2(vector<string> commands){
     map<string,string> z ;
     string c = "" ;
@@ -624,7 +601,6 @@ map<string,string> make_command_readble2(vector<string> commands){
     }
     return z;
 }
-
 
 string get_string_like_normal(string x){
     x.erase(0,1);
@@ -778,7 +754,6 @@ void restaurant_detail(System &system,string name){
             i = j;
             break;
         }
-        
     }
     if (i != -1)
     {
@@ -792,18 +767,15 @@ void restaurant_detail(System &system,string name){
        {
         cout << key << "(" << value << ")" << ", " ;
        }
-       
        cout << endl;
         for (auto  [key,value] : x->get_reserve_chairs())
         {
             cout << key <<": "<<endl;
         }
-        
-
     }else{
         cout << "Not Foundm" << endl;
         return;
     }
-    
-    
 }
+
+#endif

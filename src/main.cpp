@@ -92,7 +92,7 @@ int main(int argc, char* argv[]) {
 
     file2.close();
 
-    vector<string> defined_commands = {"POST","GET","PUT"};
+    vector<string> defined_commands = {"POST","GET","PUT", "DELETE"};
 
     while (getline(cin,command))
     {
@@ -122,6 +122,8 @@ int main(int argc, char* argv[]) {
                 break;  
             case 3:
                 PUT(commands,system,first_user);       
+            case 4:
+                DELETE(commands, system, first_user);
         }    
     }
 

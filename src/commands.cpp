@@ -1,8 +1,9 @@
-// #ifndef COMMANDS
-// #define COMMANDS
+#ifndef COMMANDS
+#define COMMANDS
 #include "header.hpp"
 #include "classes.hpp"
 #include "reserve.hpp"
+// #include "delete_reserve.hpp"
 bool POST_signup(vector<string> &commands,System &ss,User *user){
     string username = commands[4];
     string password = commands[6];
@@ -168,6 +169,29 @@ vector<string> splitStringByDelimiter(const string& input, char delimiter) {
     return result;
 }
 
+void delete_reserve(System* system,User* user,map<string, string> content){
+    string restaurant_name = content["restaurant_name"];
+    int reserve_id = stoi(content["reserve_id"]);
+    if(!has_restaurant(*system, restaurant_name)){
+        cout<<"Not Found"<<endl;
+        return;
+    }
+    shared_ptr<Resturant> * restaurant = get_resturant_ptr_filter_name(*system, restaurant_name);
+    if(!(*restaurant)->has_reservation(reserve_id)){
+        cout<<"Not Found"<<endl;
+        return;
+    }
+    if(!user->has_reservation(restaurant_name)){
+        cout<<"Permission Denied"<<endl;
+        return;
+    }
+    if(user->has_this_reservation(restaurant_name, reserve_id)){
+        cout<<"Permission Denied"<<endl;
+        return;
+    }
+    (*restaurant)->delete_reserve_by_id(reserve_id);
+    user->delete_reserve_by_id(reserve_id, restaurant_name);
+}
 
 void GET(vector<string> &commands,System &ss,User * user){
     if(commands.size() < 3){
@@ -392,4 +416,41 @@ void PUT(vector<string> &commands,System &ss,User * user){
     }
     cout << "Bad Request1";
 }
-// #endif
+
+map<string, string> prepare_delete_content(vector<string> commands){
+    map<string, string> content;
+    string c="";
+    for (auto  i : commands)
+    {
+        c += " " + i;
+    }
+    
+    string d =  "";
+    size_t pos1 = 0;
+    size_t pos2 = 0;
+    
+    pos1 = c.find("restaurant_name");
+    pos1 = c.find('"',pos1);
+    pos2 = c.find('"',pos1+1);
+    d = c.substr(pos1+1,pos2-pos1-1);
+    content["restaurant_name"] = d;
+    pos1 = c.find("reserve_id");
+    pos1 = c.find('"',pos1);
+    pos2 = c.find('"',pos1+1);
+    d = c.substr(pos1+1,pos2-pos1-1);    
+    content["reserve_id"] = d;
+    return content;
+}
+
+void DELETE(vector<string> &commands,System &system,User * user){
+    if(commands[1] == "reserve"){
+        if(commands[2]=="?" and commands[3]=="restaurant_name" && commands[5] == "reserve_id"){
+            auto content = prepare_delete_content(commands);
+            delete_reserve(&system, &(*user), content); 
+            
+        }
+
+    }
+}
+
+#endif

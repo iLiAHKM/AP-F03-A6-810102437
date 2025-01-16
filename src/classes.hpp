@@ -1,5 +1,5 @@
-// #ifndef CLASSES
-// #define CLASSES
+#ifndef CLASSES
+#define CLASSES
 #include "header.hpp"
 
 
@@ -8,16 +8,10 @@ class Table{
 public:
     Table(int id_) {
         id = id_;
-        // reservation = make_shared<RservInterval>();
     }
     void set_new_reservtion(const pair<int, int>& interval){ (reservation).push_back(interval); }
     int get_id(){ return id; }
     RservInterval get_reservation(){
-        
-        // if(!is_reserved()){
-        //     cout<<"dddd"<<endl;
-        //     return nullptr;
-        // }
         return reservation; 
     }
     bool is_reserved(){ return !(reservation.empty()); }
@@ -40,7 +34,7 @@ public:
         tables = make_shared<vector<Table>>(*obj.get_tables());
         reservation_id = obj.get_reservation_id();
     }
-    //a~Resturant(){ delete reservation_id; }
+
     string get_distric();
     string get_name();
     shared_ptr<map<string, string>> get_foods();
@@ -63,6 +57,25 @@ public:
         if(it == reserved_chair.end()) return false;
         return true;
     }
+    void delete_reserve_by_id(const int id){
+        for(auto table:*tables){
+            if(table.get_id() == id){
+                cout<<11<<endl;
+                tables->erase(find_if(tables->begin(), tables->end(),[&id] (Table table){
+                    cout<<"ID"<<table.get_id()<<'.'<<id<<endl;
+                    return table.get_id()==id;
+                })
+                );
+                cout<<22<<endl;
+            }
+        }
+
+        for(auto pair:reserved_chair){
+            if(pair.first == id){
+                reserved_chair.erase(id);
+            }
+        }
+    }
 private:
     string name;
     string district;
@@ -77,7 +90,7 @@ private:
 };
 
 class User {
-    public:
+public:
     string get_username();
     string get_password();
     string get_district();
@@ -120,7 +133,7 @@ class User {
         
         auto& reservation_info = reservation2[restaurant_name];
 
-        auto it = reservation_info.find(id);
+        auto it = reservation_info.find(id); 
         if (it == reservation_info.end()) {
             RservInterval vec = {interval};
             reservation_info[id] = make_shared<RservInterval>(vec);
@@ -128,18 +141,34 @@ class User {
         }
         
         (it->second)->push_back(interval);
-}
-
-
+    }  
     bool is_logged_in();
-    private:
-        string district = "";
-        string username;
-        string password;
-        bool login_status = 0;
-        bool is_auser = 0;
-        shared_ptr<map<string,string>> reservation= make_shared<map<string,string>>();
-        Reservation reservation2;
+    void delete_reserve_by_id(const int id, const string restaurant_name){
+        for(auto pair:reservation2){
+            cout<<"OO"<<endl;
+            if(pair.first == restaurant_name){
+                for(auto pair2:pair.second){
+                    cout<<"III"<<endl;
+                    cout<<pair2.first<<'.'<<id<<endl;
+                    if(pair2.first == id){
+                        cout<<endl<<"99"<<endl;
+                        (pair.second).erase(id);
+                        cout<<"**"<<endl;
+                    }
+                }
+            }
+        }
+    }
+
+
+private:
+    string district = "";
+    string username;
+    string password;
+    bool login_status = 0;
+    bool is_auser = 0;
+    shared_ptr<map<string,string>> reservation= make_shared<map<string,string>>();
+    Reservation reservation2;
 };
 
 class System{
@@ -162,4 +191,4 @@ class System{
 };
 
 
-// #endif
+#endif

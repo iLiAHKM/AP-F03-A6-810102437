@@ -19,6 +19,8 @@ POST reserve ? restaurant_name "sib" table_id "4" start_time "9" end_time "10" f
 POST reserve ? restaurant_name "sib" table_id "5" start_time "10" end_time "11" foods "berger,pitza,berger,pitza,pitza,pitza,berger,pitza"
 GET reserve ? 
 ad
-GET reserve ? restaurant_name "sib" 
-GET reserve ? restaurant_name "sib" reserve_id "1"
+GET reserve ? resjkhtaurant_name "sib" 
+GE5T reserve ? restaurant_name "sib" reserve_id "1"
+DELETE reserve ? restaurant_name "sib" reserve_id "1"
+GET reserve ? 
 sdfasd
